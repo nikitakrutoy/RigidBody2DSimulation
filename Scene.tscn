@@ -1,0 +1,74 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://RigidBody.gd" type="Script" id=1]
+
+[sub_resource type="CubeMesh" id=1]
+
+[node name="Root" type="Node2D"]
+
+[node name="Body" type="MeshInstance2D" parent="."]
+position = Vector2( 503.963, 28.9834 )
+scale = Vector2( 15, 15 )
+mesh = SubResource( 1 )
+script = ExtResource( 1 )
+
+[node name="Floor" type="MeshInstance2D" parent="."]
+position = Vector2( 434.721, 234.022 )
+rotation = 0.881391
+scale = Vector2( 100, 10 )
+mesh = SubResource( 1 )
+script = ExtResource( 1 )
+is_static = true
+
+[node name="Floor6" type="MeshInstance2D" parent="."]
+position = Vector2( 578.559, 321.673 )
+rotation = -3.74897
+scale = Vector2( 100, 10 )
+mesh = SubResource( 1 )
+script = ExtResource( 1 )
+is_static = true
+
+[node name="Floor7" type="MeshInstance2D" parent="."]
+position = Vector2( 410.023, 438.326 )
+rotation = 0.329867
+scale = Vector2( 100, 10 )
+mesh = SubResource( 1 )
+script = ExtResource( 1 )
+is_static = true
+
+[node name="Floor8" type="MeshInstance2D" parent="."]
+position = Vector2( 506.061, 550.238 )
+scale = Vector2( 100, 10 )
+mesh = SubResource( 1 )
+script = ExtResource( 1 )
+is_static = true
+
+[node name="Floor2" type="MeshInstance2D" parent="."]
+position = Vector2( 628.767, 182.18 )
+rotation = -0.329867
+scale = Vector2( 100, 10 )
+mesh = SubResource( 1 )
+script = ExtResource( 1 )
+is_static = true
+
+[node name="Floor4" type="MeshInstance2D" parent="."]
+position = Vector2( 403.236, 114.668 )
+rotation = 0.385718
+scale = Vector2( 100, 10 )
+mesh = SubResource( 1 )
+script = ExtResource( 1 )
+is_static = true
+
+[node name="Floor3" type="MeshInstance2D" parent="."]
+position = Vector2( 439.221, 228.022 )
+scale = Vector2( 10, 1000 )
+mesh = SubResource( 1 )
+script = ExtResource( 1 )
+is_static = true
+
+[node name="Floor5" type="MeshInstance2D" parent="."]
+position = Vector2( 567.504, 233.022 )
+scale = Vector2( 10, 1000 )
+mesh = SubResource( 1 )
+script = ExtResource( 1 )
+is_static = true
