@@ -4,13 +4,15 @@ export var is_static = false
 
 var speed = Vector2.ZERO
 var angular_speed = 0
-var mass : float = 0.5
-var moment_of_inertia = 1e3
+var mass : float = 1.0
+var moment_of_inertia = 1e2
 
 var last_speed = Vector2.ZERO
 var last_angular_speed = 0
 var last_position : Vector2
 var last_rotation_degrees = 0
+
+var offsets
 
 var is_collided = false;
 
@@ -18,17 +20,18 @@ var force : Vector2 = Vector2.ZERO
 var torque = 0
 var delta = 0
 
-const K = -100
-const COLLISION_TOLLERANCE = 1.0
+var g = 60.0
 
-var g = 30.8
+var EPS = 1e-3
 
-func get_points():
-	var t1 = Vector2(-scale.x, scale.y).rotated(deg2rad(rotation_degrees))
-	var t2 = Vector2(scale.x, -scale.y).rotated(deg2rad(rotation_degrees))
-	var t3 = scale.rotated(deg2rad(rotation_degrees))
-	var t4 = -scale.rotated(deg2rad(rotation_degrees))
-	return [position + t3, position + t4, position + t1, position + t2]
+func get_point(i, p):
+	return p + offsets[i].rotated(deg2rad(rotation_degrees))
+	
+func get_points(p):
+	var result = []
+	for i in range(4):
+		result.append(p + offsets[i].rotated(deg2rad(rotation_degrees)))
+	return result
 
 func get_local_points():
 	var t1 = Vector2(-scale.x, scale.y)
@@ -39,82 +42,66 @@ func is_inside(p : Vector2):
 	var diff : Vector2 = ((p - position).rotated(-rotation_degrees * PI / 180) / scale).abs()
 	return max(diff.x, diff.y) < 1
 	
-func closest_edge_normal_vector(p: Vector2):
+func closest_edge_normal_vector(p: Vector2, dir):
 	var p_local = ((p - position).rotated(-rotation_degrees * PI / 180) / scale)
-	var p_rotated = p_local.rotated(45 * PI / 180).sign()
-	var normal = Vector2(
-		int(p_rotated.x == p_rotated.y) * p_rotated.x, 
-		int(p_rotated.x != p_rotated.y) * p_rotated.y
-	)
-	return normal.rotated(rotation_degrees * PI / 180).normalized()
+	var normals = [
+		Vector2.UP,
+		Vector2.RIGHT,
+		-Vector2.UP,
+		-Vector2.RIGHT
+	]
+	var dists = [
+		p_local.y + 1,
+		1 - p_local.x,
+		1 - p_local.y,
+		p_local.x + 1,
+	]
+	var min_dist = 3
+	var min_normal = Vector2.UP
+	for i in range(4):
+		if dists[i] < min_dist && normals[i].dot(dir) <= 0:
+			min_normal = normals[i]
+			min_dist = dists[i]
+	return min_normal.rotated(rotation_degrees * PI / 180).normalized()
 	
-func closest_edge_force_vector(p: Vector2, inverse_normal = false):
+func closest_edge_dist_vector(p: Vector2, n):
 	var p_local = ((p - position).rotated(-rotation_degrees * PI / 180) / scale)
-	var p_rotated = p_local.rotated(45 * PI / 180).sign()
-	var normal = Vector2(
-		int(p_rotated.x == p_rotated.y) * p_rotated.x, 
-		int(p_rotated.x != p_rotated.y) * p_rotated.y
-	)
-	if inverse_normal:
-		normal = -normal
 	var d = min(1 - abs(p_local.x), 1 - abs(p_local.y)) 
-	var dist = d * (normal * scale).length()
+	var dist = d * (n * scale).length()
+	return dist;
 	
-	var coef = K * (dist - COLLISION_TOLLERANCE)
-	return coef * normal.rotated(rotation_degrees * PI / 180)
-	
-func impulse_response(p, effector, inverse_normal = false):
-	var n = effector.closest_edge_normal_vector(p)
-	if inverse_normal:
-		n = -n
+func impulse_response(p, n, effector):
 	var r = p - position
 	var local_speed = speed + Vector2(r.y * -angular_speed, r.x * angular_speed)
 	var j = -local_speed.dot(n) / (1 / mass + r.cross(n) * r.cross(n) / moment_of_inertia)
 	speed += j * n / mass
 	angular_speed += r.cross(j * n) / moment_of_inertia
-	
-func contact_force(p, effector, inverse_normal = false):
-	var r = p - position
-	var f : Vector2 = effector.closest_edge_force_vector(p, inverse_normal)
-	force += f
-	torque += -f.cross(r.normalized()) * r.length()
-	
-func process_collision(p, effector, inverse_normal = false):
-	contact_force(p, effector, inverse_normal)
-	
-	if not is_collided:
-		is_collided = true
-		apply_state()
-		
-	impulse_response(p, effector)
-	
-func save_state():
-	last_speed = speed
-	last_position = position
-	last_angular_speed = angular_speed
-	last_rotation_degrees = rotation_degrees
-	
-func apply_state():
-	speed = last_speed
-	position = last_position
-	angular_speed = last_angular_speed
-	rotation_degrees = last_rotation_degrees
 
 func collide():
 	for node in owner.get_children():
 		if node is MeshInstance2D and node != self:
 			var mesh : MeshInstance2D = node
-			for p in get_points():
-				
+			for i in range(4):
+				var p = get_point(i, position)
 				if node.is_inside(p):
 					
 					# body penetrates static object
 					if not is_static:
-						process_collision(p, node, false)
-					
+						var dir = speed.rotated(-node.rotation_degrees * PI / 180).normalized()
+						var n = node.closest_edge_normal_vector(p, dir)
+						impulse_response(p, n, node)
+						
+						var d = closest_edge_dist_vector(p, n) + EPS
+						position += d * n;
+
 					# static object penetrates body
 					if not node.is_static:
-						node.process_collision(p, node, true)
+						var dir = -node.speed.rotated(-node.rotation_degrees * PI / 180).normalized()
+						var n = -node.closest_edge_normal_vector(p, dir)
+						node.impulse_response(p, n, node)
+						
+						var d = node.closest_edge_dist_vector(p, n) + EPS
+						node.position +=  d * n;
 						
 	return is_collided
 
@@ -122,27 +109,37 @@ func collide():
 func _ready():
 	last_position = position
 	last_rotation_degrees = rotation_degrees
+	offsets = [
+		Vector2(-scale.x, scale.y), Vector2(scale.x, -scale.y), scale, -scale
+	]
+
+var accum = 0.0
+var dt = 0.0008
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta):
-	collide()
-	
-	if is_static:
-		return
+func _process(delta):
+	accum += delta
+	while accum >= dt:
+		delta = dt
 		
-	save_state()
-	
-	# Apply force
-	var a = force / mass - g * Vector2.UP	
-	speed += a * delta
-	position += speed * delta
-	
-	# Apply torque
-	var w = torque / moment_of_inertia
-	angular_speed += w * delta
-	rotate(angular_speed * delta)
-	
-	# Reset collision
-	force = Vector2.ZERO
-	torque = 0
-	is_collided = false
+		collide()
+		
+		if is_static:
+			return
+		
+		# Apply force
+		var a = force / mass - g * Vector2.UP	
+		speed += a * delta
+		position += speed * delta
+		
+		# Apply torque
+		var w = torque / moment_of_inertia
+		angular_speed += w * delta
+		rotate(angular_speed * delta)
+		
+		# Reset collision
+		force = Vector2.ZERO
+		torque = 0
+		is_collided = false
+		
+		accum -= dt

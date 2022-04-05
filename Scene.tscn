@@ -8,7 +8,15 @@
 
 [node name="Body" type="MeshInstance2D" parent="."]
 modulate = Color( 0.380392, 0.792157, 0.407843, 1 )
-position = Vector2( 184.704, 44.9729 )
+position = Vector2( 153.15, 39.1223 )
+scale = Vector2( 15, 15 )
+mesh = SubResource( 1 )
+script = ExtResource( 1 )
+
+[node name="Body2" type="MeshInstance2D" parent="."]
+visible = false
+modulate = Color( 0.380392, 0.792157, 0.407843, 1 )
+position = Vector2( 593.15, 74.1223 )
 scale = Vector2( 15, 15 )
 mesh = SubResource( 1 )
 script = ExtResource( 1 )
@@ -42,7 +50,8 @@ is_static = true
 
 [node name="Floor8" type="MeshInstance2D" parent="."]
 modulate = Color( 0.423529, 0.807843, 0.835294, 1 )
-position = Vector2( 325.445, 445.585 )
+position = Vector2( 314.742, 421.801 )
+rotation = -0.261799
 scale = Vector2( 100, 10 )
 mesh = SubResource( 1 )
 script = ExtResource( 1 )
@@ -50,7 +59,7 @@ is_static = true
 
 [node name="Floor9" type="MeshInstance2D" parent="."]
 modulate = Color( 0.423529, 0.807843, 0.835294, 1 )
-position = Vector2( 59.0164, 525.749 )
+position = Vector2( 76.3783, 509.74 )
 rotation = -0.360477
 scale = Vector2( 100, 10 )
 mesh = SubResource( 1 )
@@ -59,8 +68,80 @@ is_static = true
 
 [node name="Floor10" type="MeshInstance2D" parent="."]
 modulate = Color( 0.423529, 0.807843, 0.835294, 1 )
-position = Vector2( 294.24, 531.305 )
+position = Vector2( 305.537, 510.494 )
 rotation = -0.176022
+scale = Vector2( 100, 10 )
+mesh = SubResource( 1 )
+script = ExtResource( 1 )
+is_static = true
+
+[node name="Floor11" type="MeshInstance2D" parent="."]
+modulate = Color( 0.423529, 0.807843, 0.835294, 1 )
+position = Vector2( 180.719, 598.576 )
+scale = Vector2( 100, 10 )
+mesh = SubResource( 1 )
+script = ExtResource( 1 )
+is_static = true
+
+[node name="Body4" type="MeshInstance2D" parent="."]
+modulate = Color( 0.380392, 0.792157, 0.407843, 1 )
+position = Vector2( 693.15, 48.1223 )
+scale = Vector2( 15, 15 )
+mesh = SubResource( 1 )
+script = ExtResource( 1 )
+
+[node name="Floor13" type="MeshInstance2D" parent="."]
+modulate = Color( 0.423529, 0.807843, 0.835294, 1 )
+position = Vector2( 692.719, 143.576 )
+scale = Vector2( 100, 10 )
+mesh = SubResource( 1 )
+script = ExtResource( 1 )
+is_static = true
+
+[node name="Body5" type="MeshInstance2D" parent="."]
+modulate = Color( 0.380392, 0.792157, 0.407843, 1 )
+position = Vector2( 1036.15, 351.122 )
+rotation = 0.785398
+scale = Vector2( 15, 15 )
+mesh = SubResource( 1 )
+script = ExtResource( 1 )
+
+[node name="Floor14" type="MeshInstance2D" parent="."]
+modulate = Color( 0.423529, 0.807843, 0.835294, 1 )
+position = Vector2( 1035.72, 422.576 )
+scale = Vector2( 100, 10 )
+mesh = SubResource( 1 )
+script = ExtResource( 1 )
+is_static = true
+
+[node name="Body6" type="MeshInstance2D" parent="."]
+modulate = Color( 0.380392, 0.792157, 0.407843, 1 )
+position = Vector2( 546.15, 375.122 )
+rotation = 0.350811
+scale = Vector2( 15, 15 )
+mesh = SubResource( 1 )
+script = ExtResource( 1 )
+
+[node name="Floor15" type="MeshInstance2D" parent="."]
+modulate = Color( 0.423529, 0.807843, 0.835294, 1 )
+position = Vector2( 1436.72, 739.576 )
+rotation = 0.354302
+scale = Vector2( 1000, 10 )
+mesh = SubResource( 1 )
+script = ExtResource( 1 )
+is_static = true
+
+[node name="Body7" type="MeshInstance2D" parent="."]
+modulate = Color( 0.380392, 0.792157, 0.407843, 1 )
+position = Vector2( 845.15, 219.122 )
+rotation = 1.10305
+scale = Vector2( 15, 15 )
+mesh = SubResource( 1 )
+script = ExtResource( 1 )
+
+[node name="Floor16" type="MeshInstance2D" parent="."]
+modulate = Color( 0.423529, 0.807843, 0.835294, 1 )
+position = Vector2( 844.719, 290.576 )
 scale = Vector2( 100, 10 )
 mesh = SubResource( 1 )
 script = ExtResource( 1 )

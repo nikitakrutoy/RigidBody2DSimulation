@@ -15,7 +15,7 @@ config/icon="res://icon.png"
 
 [display]
 
-window/size/width=400
+window/size/width=1200
 
 [physics]
 
